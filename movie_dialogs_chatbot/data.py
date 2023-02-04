@@ -22,4 +22,46 @@ import json
 USE_CUDA = torch.cuda.is_available()
 device = torch.device("cuda" if USE_CUDA else "cpu")
 
+corpus_name = "movie_corpus"
+corpus = os.path.join("data", corpus_name)
+
+def printLines(file, n=10):
+    with open(file, 'rb') as datafile:
+        lines = datafile.readlines()
+    for line in lines[:n]:
+        print(line)
+
+printLines(os.path.join(corpus, "utterances.jsonl"))
+
+def loadLinesAndConversations(fileName):
+    lines = {}
+    conversations = {}
+
+    with open(fileName, 'r', encoding='iso-8859-1') as f:
+        for line in f:
+            lineJson = json.loads(line)
+            #lineObj gets in lines dict
+            lineObj = {}
+            lineObj['lineID'] = lineJson['id']
+            lineObj['characterID'] = lineJson['speaker']
+            lineObj['text'] = lineJson['text']
+
+            lines[lineObj['lineID']] = lineObj 
+
+            if lineJson['conversation_id'] not in conversations:
+                convObj = {}
+                convObj['conversationID'] = lineJson['conversation_id']
+                convObj['movieID'] = lineJson['meta']['movie_id']
+                convObj['lines'] = [lineObj]
+            else:
+                convObj = conversations[lineJson['conversation_id']]
+                convObj['lines'].insert(0, lineObj)
+            conversations[convObj['conversationID']] = convObj 
+    return lines, conversations 
+
+
+
+
+
+
 
