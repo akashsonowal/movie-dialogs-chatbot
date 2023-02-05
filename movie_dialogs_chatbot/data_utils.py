@@ -31,8 +31,6 @@ def printLines(file, n=10):
     for line in lines[:n]:
         print(line)
 
-printLines(os.path.join(corpus, "utterances.jsonl"))
-
 def loadLinesAndConversations(fileName):
     lines = {}
     conversations = {}
@@ -69,39 +67,3 @@ def extractSentencePairs(conversations):
             if inputLine and targetLine:
                 qa_pairs.append([inputLine, targetLine])
     return qa_pairs 
-
-datafile = os.path.join(corpus, 'formatted_movie_lines.txt')
-
-delimiter = "\t"
-delimiter = str(codecs.decode(delimiter, "unicode_escape"))
-
-lines = {}
-conversations = {}
-print('\n Processing corpus into lines and conversations...')
-lines, conversations = loadLinesAndConversations(os.path.join(corpus, "utterances.jsonl"))
-
-#Writing new formatted file
-print("\n Writing new formatted file...")
-with open(datafile, 'w', encoding='utf-8') as outfile:
-    writer = csv.writer(outfile, delimiter=delimiter, lineterminator='\n')
-    for pair in conversations:
-        writer.writerow(pair)
-
-print('\n Sample lines from file:')
-printLines(datafile)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
